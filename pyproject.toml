@@ -1,0 +1,24 @@
+[project]
+name = "job-lead-scout"
+version = "0.1.0"
+description = "A web application that finds, filters, and organizes relevant job leads."
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Austin Granbery" }
+]
+dependencies = [
+    "fastapi[standard-no-fastapi-cloud-cli]>=0.139.2",
+    "httpx>=0.28.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.fastapi]
+entrypoint = "app.main:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
