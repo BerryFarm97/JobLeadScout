@@ -49,3 +49,50 @@ def init_db(db_path="job_leads.db"):
     finally:
         if conn is not None:
             conn.close()
+
+
+def add_job_lead(
+    source_job_id,
+    job_source,
+    company_name,
+    job_title,
+    url,
+    location,
+    db_path="job_leads.db",
+):
+    conn = None
+
+    try:
+        conn = get_db_connection(db_path)
+        cur = get_db_cursor(conn)
+
+        cur.execute(
+            """INSERT INTO job_leads
+            (source_job_id, job_source, company_name, job_title, url, location)
+            VALUES (?, ?, ?, ?, ?, ?)""",
+            (
+                source_job_id,
+                job_source,
+                company_name,
+                job_title,
+                url,
+                location,
+            ),
+        )
+        conn.commit()
+        return True
+
+    except sqlite3.IntegrityError:
+        if conn is not None:
+            conn.rollback()
+        return False
+
+    except sqlite3.Error as error:
+        if conn is not None:
+            conn.rollback()
+        print(error)
+        return False
+
+    finally:
+        if conn is not None:
+            conn.close()

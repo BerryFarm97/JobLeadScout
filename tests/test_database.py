@@ -1,5 +1,5 @@
 import sqlite3
-from app.database import init_db
+from app.database import init_db, add_job_lead
 
 
 def test_init_db_creates_database_file(tmp_path):
@@ -26,3 +26,70 @@ def test_init_db_creates_job_leads_table(tmp_path):
     test_conn.close()
 
     assert table == ("job_leads",)
+
+
+def test_add_job_lead_inserts_valid_job(tmp_path):
+    test_job_details = (
+        "Zk9mP2nQ4R",
+        "LinkedIn",
+        "Amazon",
+        "Python Backend Developer ENTRY",
+        "https://www.amazon.com/careers",
+        "USA",
+    )
+
+    test_db = tmp_path / "test_job_leads_table.db"
+    init_db(test_db)
+
+    result = add_job_lead(*test_job_details, db_path=test_db)
+    assert result is True
+
+    test_conn = sqlite3.connect(test_db)
+    test_cur = test_conn.cursor()
+
+    query = """SELECT
+    source_job_id,
+    job_source,
+    company_name,
+    job_title,
+    url,
+    location
+    FROM job_leads WHERE source_job_id = ?"""
+
+    test_cur.execute(query, (test_job_details[0],))
+    row = test_cur.fetchone()
+    test_conn.close()
+
+    assert row == test_job_details
+
+
+def test_add_job_lead_rejects_duplicate_source_job(tmp_path):
+    test_job_details = (
+        "Zk9mP2nQ4U",
+        "LinkedIn",
+        "Amazon",
+        "Python Backend Developer ENTRY",
+        "https://www.amazon.com/careers",
+        "USA",
+    )
+
+    test_db = tmp_path / "test_job_leads_table.db"
+    init_db(test_db)
+
+    first_result = add_job_lead(*test_job_details, db_path=test_db)
+    assert first_result is True
+
+    duplicate_result = add_job_lead(*test_job_details, db_path=test_db)
+    assert duplicate_result is False
+
+    test_conn = sqlite3.connect(test_db)
+    test_cur = test_conn.cursor()
+
+    query = "SELECT COUNT(*) FROM job_leads"
+
+    test_cur.execute(query)
+    job_count = test_cur.fetchone()[0]
+
+    test_conn.close()
+
+    assert job_count == 1
