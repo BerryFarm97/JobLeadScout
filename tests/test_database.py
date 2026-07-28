@@ -1,5 +1,5 @@
 import sqlite3
-from app.database import init_db, add_job_lead
+from app.database import init_db, add_job_lead, get_all_job_leads
 
 
 def test_init_db_creates_database_file(tmp_path):
@@ -93,3 +93,44 @@ def test_add_job_lead_rejects_duplicate_source_job(tmp_path):
     test_conn.close()
 
     assert job_count == 1
+
+
+def test_get_all_job_leads_returns_empty_list(tmp_path):
+    test_db = tmp_path / "test_job_leads_table.db"
+    init_db(test_db)
+
+    empty_result = get_all_job_leads(db_path=test_db)
+
+    assert empty_result == []
+
+
+def test_get_all_job_leads_returns_stored_job_as_dictionary(tmp_path):
+    test_job_details = (
+        "Zk9mP2nQ4$",
+        "LinkedIn",
+        "Amazon",
+        "Python Backend Developer ENTRY",
+        "https://www.amazon.com/careers",
+        "USA",
+    )
+    test_db = tmp_path / "test_job_leads_table.db"
+    init_db(test_db)
+    add_job_lead(*test_job_details, db_path=test_db)
+
+    test_result = get_all_job_leads(db_path=test_db)
+
+    assert isinstance(test_result, list) is True
+    assert len(test_result) == 1
+
+    stored_job = test_result[0]
+    assert isinstance(stored_job, dict)
+
+    assert stored_job["source_job_id"] == test_job_details[0]
+    assert stored_job["job_source"] == test_job_details[1]
+    assert stored_job["company_name"] == test_job_details[2]
+    assert stored_job["job_title"] == test_job_details[3]
+    assert stored_job["url"] == test_job_details[4]
+    assert stored_job["location"] == test_job_details[5]
+
+    assert stored_job["status"] == "new"
+    assert stored_job["job_location_type"] == "unknown"

@@ -96,3 +96,26 @@ def add_job_lead(
     finally:
         if conn is not None:
             conn.close()
+
+
+def get_all_job_leads(db_path="job_leads.db"):
+    conn = None
+    try:
+        conn = get_db_connection(db_path)
+        conn.row_factory = sqlite3.Row
+
+        cur = get_db_cursor(conn)
+
+        cur.execute("""SELECT * FROM job_leads
+            ORDER BY date_found DESC, id DESC""")
+
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
+
+    except sqlite3.Error as error:
+        print(error)
+        return None
+
+    finally:
+        if conn is not None:
+            conn.close()
