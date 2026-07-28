@@ -1,13 +1,21 @@
 import sqlite3
 
 
-def init_db():
+def get_db_connection(db_path="job_leads.db"):
+    return sqlite3.connect(db_path)
+
+
+def get_db_cursor(conn):
+    return conn.cursor()
+
+
+def init_db(db_path="job_leads.db"):
     conn = None
 
     try:
-        conn = sqlite3.connect("job_leads.db")
+        conn = get_db_connection(db_path)
 
-        cur = conn.cursor()
+        cur = get_db_cursor(conn)
 
         cur.execute("""CREATE TABLE IF NOT EXISTS
             job_leads(
@@ -41,12 +49,3 @@ def init_db():
     finally:
         if conn is not None:
             conn.close()
-
-
-def get_db_connection():
-    conn = sqlite3.connect("job_leads.db")
-    return conn
-
-
-def get_db_cursor(conn):
-    return conn.cursor()
