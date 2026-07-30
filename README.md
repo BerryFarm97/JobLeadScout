@@ -8,9 +8,9 @@ Job Lead Scout searches legitimate job listings using a user-defined set of para
 
 The following features are planned for the MVP and will be updated as they are completed.
 
-- [ ] Collect job leads from legitimate job-search APIs
-- [ ] Store essential information about each lead
-- [ ] Prevent duplicate listings from being saved
+- [ x] Collect job leads from legitimate job-search APIs
+- [ x] Store essential information about each lead
+- [ x] Prevent duplicate listings from being saved
 - [ ] Classify listings as remote, local, hybrid, outside the preferred area, or unknown
 - [ ] Estimate whether each listing is a likely match, possible stretch, or unlikely match
 - [ ] Allow leads to be saved, dismissed, applied to, or archived
