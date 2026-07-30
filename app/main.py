@@ -1,10 +1,13 @@
 import os
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 
-from app.database import init_db, get_all_job_leads
+from app.database import get_all_job_leads, init_db
 from app.services.job_importer import refresh_adzuna_jobs
+
+load_dotenv()
 
 
 @asynccontextmanager

@@ -10,6 +10,7 @@ authors = [
 dependencies = [
     "fastapi[standard-no-fastapi-cloud-cli]>=0.139.2",
     "httpx>=0.28.1",
+    "python-dotenv>=1.2.2",
 ]
 
 [tool.uv]
