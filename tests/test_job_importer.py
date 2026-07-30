@@ -1,5 +1,8 @@
+from unittest.mock import Mock
+
+
 from app.database import get_all_job_leads, init_db
-from app.services.job_importer import import_adzuna_jobs
+from app.services.job_importer import import_adzuna_jobs, refresh_adzuna_jobs
 
 
 def test_import_adzuna_jobs_saves_each_job(tmp_path):
@@ -66,3 +69,41 @@ def test_import_adzuna_jobs_counts_only_new_jobs(tmp_path):
 
     assert imported_count == 1
     assert len(stored_jobs) == 1
+
+
+def test_refresh_adzuna_jobs_fetches_and_imports(monkeypatch):
+    raw_jobs = [{"id": "adzuna-101"}, {"id": "adzuna-102"}]
+
+    mock_fetch = Mock(return_value=raw_jobs)
+    mock_import = Mock(return_value=2)
+
+    monkeypatch.setattr(
+        "app.services.job_importer.fetch_adzuna_jobs",
+        mock_fetch,
+    )
+    monkeypatch.setattr(
+        "app.services.job_importer.import_adzuna_jobs",
+        mock_import,
+    )
+
+    imported_count = refresh_adzuna_jobs(
+        app_id="test-app-id",
+        app_key="test-app-key",
+        keywords="software developer",
+        location="Houston, TX",
+        results_per_page=10,
+        db_path="test.db",
+    )
+
+    assert imported_count == 2
+    mock_fetch.assert_called_once_with(
+        app_id="test-app-id",
+        app_key="test-app-key",
+        keywords="software developer",
+        location="Houston, TX",
+        results_per_page=10,
+    )
+    mock_import.assert_called_once_with(
+        raw_jobs,
+        db_path="test.db",
+    )
