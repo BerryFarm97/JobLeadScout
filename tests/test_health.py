@@ -15,10 +15,10 @@ def test_health_check():
     assert response.json() == {"status": "healthy"}
 
 
-def test_lifespan_initializes_database(monkeypatch):
+def test_lifespan_initializes_database(monkeypatch): # type: ignore
     mock_init_db = Mock(return_value=True)
 
-    monkeypatch.setattr("app.main.init_db", mock_init_db)
+    monkeypatch.setattr("app.main.init_db", mock_init_db) # type: ignore
 
     with TestClient(app):
         pass
@@ -26,10 +26,10 @@ def test_lifespan_initializes_database(monkeypatch):
     mock_init_db.assert_called_once_with()
 
 
-def test_lifespan_fails_to_initialize_database(monkeypatch):
+def test_lifespan_fails_to_initialize_database(monkeypatch): # type: ignore
     mock_init_db_failed = Mock(return_value=False)
 
-    monkeypatch.setattr("app.main.init_db", mock_init_db_failed)
+    monkeypatch.setattr("app.main.init_db", mock_init_db_failed) # type: ignore
 
     with pytest.raises(RuntimeError, match="Failed to initialize database"):
         with TestClient(app):
