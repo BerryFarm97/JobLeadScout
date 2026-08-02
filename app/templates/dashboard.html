@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/dashboard.js" defer></script>
+    <title>Job Lead Scout</title>
+</head>
+<body>
+    <header>
+        <h1>Job Lead Scout</h1>
+        <p>Job Lead Scout searches for jobs by keywords and location, stores listings, and displays them.</p>
+    </header>
+    <main>
+        <div class="dashboard-top">
+            <section>
+                <h2>Search Job Listings</h2>
+                <form id="job-search-form">
+                    <div class="form-field">
+                        <label for="keywords">Keywords</label>
+                        <input type="text" id="keywords" name="keywords" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    <button type="submit">Refresh Jobs</button>
+                </form>
+            </section>
+            <section>
+                <h2>Summary</h2>
+                <p>Total Jobs: {{ job_leads | length }}</p>
+            </section>
+        </div>
+        <section>
+            <h2>Job Leads</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Location</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th>Date Found</th>
+                        <th>Listing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in job_leads %}
+                        <tr>
+                            <td>{{ lead["match_rating"] or "Unrated" }}</td>
+                            <td>{{ lead["job_title"] }}</td>
+                            <td>{{ lead["company_name"] }}</td>
+                            <td>{{ lead["location"] }}</td>
+                            <td>Unknown</td>
+                            <td>{{ lead["status"] }}</td>
+                            <td>{{ lead["date_found"] }}</td>
+                            <td>
+                                <a href="{{ lead['url'] }}" target="_blank" rel="noopener noreferrer">View Job</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

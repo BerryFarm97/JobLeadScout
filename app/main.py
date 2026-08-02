@@ -2,7 +2,9 @@ import os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from app.database import get_all_job_leads, init_db
 from app.services.job_importer import refresh_adzuna_jobs
@@ -19,6 +21,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Job Lead Scout", lifespan=lifespan)
+
+app.mount(
+    "/static",
+    StaticFiles(directory="app/static"),
+    name="static",
+)
+
+templates = Jinja2Templates(directory="app/templates")
 
 
 @app.get("/health")
@@ -49,3 +59,13 @@ def refresh_job_leads(keywords: str, location: str):
         results_per_page=10,
     )
     return {"imported_count": imported_count}
+
+
+@app.get("/")
+def dashboard(request: Request):
+    all_job_leads = get_all_job_leads()
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={"job_leads": all_job_leads},
+    )

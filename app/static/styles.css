@@ -1,0 +1,129 @@
+:root{
+    --page-background: #101114;
+    --text-color: #E8EAED;
+    --surface-background: #181A1F;
+    --border-color: #2D3037;
+    --surface-raised: #22252B;
+    --text-muted: #A7ABB3;
+    --accent-color: #2DD4BF;
+    --accent-hover: #5EEAD4;
+    --row-hover: #202426;
+    --accent-soft: rgba(45, 212, 191, 0.12);
+}
+
+body{
+    background-color: var(--page-background);
+    color: var(--text-color);
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    line-height: 1.5;
+}
+
+header{
+    background-color: var(--surface-background);
+    padding: 32px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+main{
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+section{
+    background-color: var(--surface-background);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td{
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th{
+    background-color: var(--surface-raised);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+a{
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover{
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+tbody tr{
+    background-color: var(--surface-background);
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover{
+    background-color: var(--row-hover);
+}
+
+.form-field{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#job-search-form{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+    max-width: 250px;
+}
+
+#job-search-form button{
+    align-self: flex-start;
+    background-color: var(--surface-raised);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    color: var(--text-color);
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#job-search-form button:hover{
+    background-color: var(--accent-soft);
+    border-color: var(--accent-hover);
+}
+
+.form-field input{
+    background-color: var(--surface-raised);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.dashboard-top{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
