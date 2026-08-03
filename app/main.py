@@ -69,7 +69,7 @@ def dashboard(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
-        context={"job_leads": all_job_leads},
+        context={"job_leads": all_job_leads, "status_options": STATUS_OPTIONS},
     )
 
 

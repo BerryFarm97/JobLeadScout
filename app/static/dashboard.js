@@ -1,5 +1,6 @@
 const jobForm = document.getElementById("job-search-form");
 const refreshButton = document.getElementById("refresh-button");
+const statusDropdowns = document.querySelectorAll(".status-select");
 
 async function refreshJobLeads(event) {
     event.preventDefault();
@@ -39,5 +40,35 @@ async function refreshJobLeads(event) {
         refreshButton.textContent = "Refresh Jobs";
     }
 }
+
+statusDropdowns.forEach(function (statusDropdown) {
+    statusDropdown.addEventListener("change", async function (event) {
+        const newStatus = event.target.value;
+        const jobLeadId = event.target.dataset.jobLeadId;
+
+        const urlParams = new URLSearchParams();
+        urlParams.set("new_status", newStatus);
+
+        const queryStatusString = urlParams.toString();
+        const statusUpdateUrl = `/job-leads/${jobLeadId}/status?${queryStatusString}`;
+
+        try {
+            const statusResponse = await fetch(statusUpdateUrl, {
+                method: "PATCH",
+            });
+
+            const apiStatusResponse = await statusResponse.json()
+
+            if (statusResponse.ok) {
+                window.location.reload();
+            } else {
+                window.alert(apiStatusResponse.detail);
+            }
+        } catch (error) {
+            console.error(error);
+            window.alert("Unable to complete request. Please try again later.");
+        }
+    });
+});
 
 jobForm.addEventListener("submit", refreshJobLeads);

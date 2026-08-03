@@ -43,9 +43,9 @@
                         <th>Company</th>
                         <th>Location</th>
                         <th>Salary</th>
-                        <th>Status</th>
                         <th>Date Found</th>
                         <th>Listing</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,10 +56,16 @@
                             <td>{{ lead["company_name"] }}</td>
                             <td>{{ lead["location"] }}</td>
                             <td>Unknown</td>
-                            <td>{{ lead["status"] }}</td>
                             <td>{{ lead["date_found"] }}</td>
                             <td>
                                 <a href="{{ lead['url'] }}" target="_blank" rel="noopener noreferrer">View Job</a>
+                            </td>
+                            <td>
+                                <select class="status-select" data-job-lead-id="{{ lead['id'] }}">
+                                    {% for status_option in status_options %}
+                                        <option value="{{ status_option }}" {% if status_option == lead['status'] %}selected{% endif %}>{{ status_option | title }}</option>
+                                    {% endfor %}
+                                </select>
                             </td>
                         </tr>
                     {% endfor %}
