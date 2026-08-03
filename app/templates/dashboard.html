@@ -34,13 +34,15 @@
             </section>
         </div>
         <section>
-            <nav class="status-tabs">
-                <a href="/?">All</a>
+            <nav class="status-tabs" aria-label="Filter job leads by status">
+                <span class="filter-label">Filter by status:</span>
+                <a class="status-tab {% if filtered_status is none %} active{% endif %}" href="/">All</a>
                 {% for status_option in status_options %}
-                    <a class="status-tab" href="/?page=1&status={{ status_option }}">{{ status_option | title }}</a>
+                    <a class="status-tab {% if status_option == filtered_status %} active{% endif %}" href="/?page=1&status={{ status_option }}">{{ status_option | title }}</a>
                 {% endfor %}
             </nav>
             <h2>Job Leads</h2>
+            {% if job_leads %}
             <table>
                 <thead>
                     <tr>
@@ -78,10 +80,17 @@
                 </tbody>
             </table>
             <nav class="pagination">
+                <span class="pagination-label">Page:</span>
                 {% for page_number in range(1, total_page_count + 1) %}
-                    <a class="page-link" href="/?page={{ page_number }}{% if filtered_status %}&status={{ filtered_status }}{% endif %}">{{ page_number }}</a>
+                    <a class="page-link{% if page_number == current_page %} active{% endif %}" href="/?page={{ page_number }}{% if filtered_status %}&status={{ filtered_status }}{% endif %}">{{ page_number }}</a>
                 {% endfor %}
             </nav>
+            {% else %}
+                <div class="empty-state">
+                    <p class="empty-state-message">Nothing to see</p>
+                    <img class="empty-state-image" src="/static/images/dog_gif.gif" alt="No job leads match this filter">
+                </div>
+            {% endif %}
         </section>
     </main>
 </body>

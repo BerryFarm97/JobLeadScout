@@ -5,7 +5,7 @@
     --border-color: #2D3037;
     --surface-raised: #22252B;
     --text-muted: #A7ABB3;
-    --accent-color: #2DD4BF;
+    --accent-color: #A0A0A0;
     --accent-hover: #5EEAD4;
     --row-hover: #202426;
     --accent-soft: rgba(45, 212, 191, 0.12);
@@ -126,4 +126,81 @@ tbody tr:hover{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+}
+
+.status-tabs{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.filter-label{
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 12px;
+}
+
+.status-tab{
+    padding: 4px 8px;
+}
+
+.status-tabs .status-tab{
+    border-left: 1px solid var(--text-muted);
+}
+
+.status-tab.active{
+    background-color: var(--surface-raised);
+    color: var(--text-color);
+    font-weight: 700;
+    border-radius: 3px;
+}
+
+.pagination{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.pagination-label{
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+.page-link {
+    padding: 0px 4px;
+}
+
+.page-link + .page-link{
+    border-left: 1px solid var(--text-muted);
+}
+
+.page-link.active {
+    background-color: var(--surface-raised);
+    color: var(--text-color);
+    font-weight: 700;
+    border-radius: 3px;
+}
+
+.empty-state{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px;
+}
+
+.empty-state-message{
+    color: var(--text-color);
+    font-size: 2.75rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+}
+
+.empty-state-image{
+    width: 100%;
+    max-width: 320px;
+    height: auto;
 }
