@@ -1,5 +1,5 @@
 const jobForm = document.getElementById("job-search-form");
-
+const refreshButton = document.getElementById("refresh-button");
 
 async function refreshJobLeads(event) {
     event.preventDefault();
@@ -16,6 +16,9 @@ async function refreshJobLeads(event) {
     const queryString = searchParams.toString();
     const refreshUrl = `/job-leads/refresh?${queryString}`;
 
+    refreshButton.disabled = true;
+    refreshButton.textContent = "Refreshing...";
+
     try {
         const response = await fetch(refreshUrl, {
             method: "POST",
@@ -31,6 +34,9 @@ async function refreshJobLeads(event) {
     } catch (error) {
         console.error(error);
         window.alert("Unable to complete request. Please try again later.");
+    } finally {
+        refreshButton.disabled = false;
+        refreshButton.textContent = "Refresh Jobs";
     }
 }
 
