@@ -1,4 +1,4 @@
-import os
+import math, os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -6,7 +6,13 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app.database import get_all_job_leads, init_db, update_job_lead_status
+from app.database import (
+    get_all_job_leads,
+    init_db,
+    update_job_lead_status,
+    get_job_leads_page,
+    get_job_leads_count,
+)
 from app.services.job_importer import refresh_adzuna_jobs
 
 load_dotenv()
@@ -64,12 +70,26 @@ def refresh_job_leads(keywords: str, location: str):
 
 
 @app.get("/")
-def dashboard(request: Request):
-    all_job_leads = get_all_job_leads()
+def dashboard(request: Request, page: int = 1, status: str | None = None):
+    limit = 20
+    page_offset = (page - 1) * limit
+
+    lead_count = get_job_leads_count(status_filter=status)
+    page_count = math.ceil(lead_count / limit)
+
+    all_job_leads = get_job_leads_page(
+        limit=limit, offset=page_offset, status_filter=status
+    )
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
-        context={"job_leads": all_job_leads, "status_options": STATUS_OPTIONS},
+        context={
+            "job_leads": all_job_leads,
+            "status_options": STATUS_OPTIONS,
+            "current_page": page,
+            "total_page_count": page_count,
+            "filtered_status": status,
+        },
     )
 
 

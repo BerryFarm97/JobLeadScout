@@ -34,6 +34,12 @@
             </section>
         </div>
         <section>
+            <nav class="status-tabs">
+                <a href="/?">All</a>
+                {% for status_option in status_options %}
+                    <a class="status-tab" href="/?page=1&status={{ status_option }}">{{ status_option | title }}</a>
+                {% endfor %}
+            </nav>
             <h2>Job Leads</h2>
             <table>
                 <thead>
@@ -71,6 +77,11 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <nav class="pagination">
+                {% for page_number in range(1, total_page_count + 1) %}
+                    <a class="page-link" href="/?page={{ page_number }}{% if filtered_status %}&status={{ filtered_status }}{% endif %}">{{ page_number }}</a>
+                {% endfor %}
+            </nav>
         </section>
     </main>
 </body>

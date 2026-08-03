@@ -168,3 +168,70 @@ def update_job_lead_status(new_status, job_lead_id, db_path="job_leads.db"):
     finally:
         if conn is not None:
             conn.close()
+
+
+def get_job_leads_page(limit, offset, status_filter=None, db_path="job_leads.db"):
+    conn = None
+
+    try:
+        conn = get_db_connection(db_path=db_path)
+        conn.row_factory = sqlite3.Row
+
+        cur = get_db_cursor(conn)
+
+        if status_filter is None:
+            cur.execute(
+                """SELECT * FROM job_leads
+                ORDER BY date_found DESC,
+                id DESC
+                LIMIT ? OFFSET ?""",
+                (limit, offset),
+            )
+
+        else:
+            cur.execute(
+                """SELECT * FROM job_leads
+                WHERE status = ?
+                ORDER BY date_found DESC, id DESC
+                LIMIT ? OFFSET ?""",
+                (status_filter, limit, offset),
+            )
+
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
+
+    except sqlite3.Error as error:
+        print(error)
+        return None
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+def get_job_leads_count(status_filter=None, db_path="job_leads.db"):
+    conn = None
+
+    try:
+        conn = get_db_connection(db_path=db_path)
+        cur = get_db_cursor(conn)
+
+        if status_filter is None:
+            cur.execute("""SELECT COUNT(*)
+                FROM job_leads""")
+        else:
+            cur.execute(
+                """SELECT COUNT(*)
+                FROM job_leads
+                WHERE status = ?""",
+                (status_filter,),
+            )
+
+        row_count = cur.fetchone()[0]
+        return row_count
+
+    except sqlite3.Error as error:
+        print(error)
+        return None
+    finally:
+        if conn is not None:
+            conn.close()
