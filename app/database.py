@@ -133,3 +133,37 @@ def get_all_job_leads(db_path="job_leads.db"):
     finally:
         if conn is not None:
             conn.close()
+
+
+def update_job_lead_status(new_status, job_lead_id, db_path="job_leads.db"):
+    conn = None
+    status_options = ["new", "saved", "applied", "archived"]
+
+    if new_status not in status_options:
+        return False
+
+    try:
+        conn = get_db_connection(db_path)
+        cur = get_db_cursor(conn)
+
+        cur.execute(
+            """UPDATE job_leads
+            SET status = ?
+            WHERE id = ?""",
+            (new_status, job_lead_id),
+        )
+
+        if cur.rowcount == 1:
+            conn.commit()
+            return True
+        else:
+            return False
+
+    except sqlite3.Error as error:
+        if conn is not None:
+            conn.rollback()
+        print(error)
+        return False
+    finally:
+        if conn is not None:
+            conn.close()

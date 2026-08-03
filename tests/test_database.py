@@ -1,5 +1,10 @@
 import sqlite3
-from app.database import init_db, add_job_lead, get_all_job_leads
+from app.database import (
+    init_db,
+    add_job_lead,
+    get_all_job_leads,
+    update_job_lead_status,
+)
 
 
 def test_init_db_creates_database_file(tmp_path):
@@ -134,3 +139,78 @@ def test_get_all_job_leads_returns_stored_job_as_dictionary(tmp_path):
 
     assert stored_job["status"] == "new"
     assert stored_job["job_location_type"] == "unknown"
+
+
+def test_update_job_lead_status_updates_existing_job(tmp_path):
+    db_path = tmp_path / "test_job_leads.db"
+    assert init_db(db_path) is True
+
+    assert (
+        add_job_lead(
+            source_job_id="status-101",
+            job_source="Adzuna",
+            company_name="Example Company",
+            job_title="Python Developer",
+            url="https://example.com/jobs/status-101",
+            location="Houston, Texas",
+            db_path=db_path,
+        )
+        is True
+    )
+
+    stored_job = get_all_job_leads(db_path=db_path)[0]
+
+    result = update_job_lead_status(
+        new_status="saved",
+        job_lead_id=stored_job["id"],
+        db_path=db_path,
+    )
+
+    updated_job = get_all_job_leads(db_path=db_path)[0]
+
+    assert result is True
+    assert updated_job["status"] == "saved"
+
+
+def test_update_job_lead_status_rejects_nonexistent_job(tmp_path):
+    db_path = tmp_path / "test_job_leads.db"
+    assert init_db(db_path) is True
+
+    result = update_job_lead_status(
+        new_status="saved",
+        job_lead_id=999,
+        db_path=db_path,
+    )
+
+    assert result is False
+
+
+def test_update_job_lead_status_rejects_invalid_status(tmp_path):
+    db_path = tmp_path / "test_job_leads.db"
+    assert init_db(db_path) is True
+
+    assert (
+        add_job_lead(
+            source_job_id="status-102",
+            job_source="Adzuna",
+            company_name="Example Company",
+            job_title="Python Developer",
+            url="https://example.com/jobs/status-102",
+            location="Houston, Texas",
+            db_path=db_path,
+        )
+        is True
+    )
+
+    stored_job = get_all_job_leads(db_path=db_path)[0]
+
+    result = update_job_lead_status(
+        new_status="dismissed",
+        job_lead_id=stored_job["id"],
+        db_path=db_path,
+    )
+
+    unchanged_job = get_all_job_leads(db_path=db_path)[0]
+
+    assert result is False
+    assert unchanged_job["status"] == "new"
