@@ -3,34 +3,6 @@ from unittest.mock import Mock
 from app.job_sources.adzuna import fetch_adzuna_jobs, normalize_adzuna_job
 
 
-def test_normalize_adzuna_job_maps_required_fields():
-    raw_job = {
-        "id": "123456",
-        "title": "Junior Python Developer",
-        "redirect_url": "https://example.com/jobs/123456",
-        "company": {
-            "display_name": "Example Company",
-        },
-        "location": {
-            "display_name": "Houston, Texas",
-        },
-        "salary_min": 60000,
-        "salary_max": 75000,
-        "description": "An entry-level Python development position.",
-    }
-
-    expected_job = {
-        "source_job_id": "123456",
-        "job_source": "Adzuna",
-        "company_name": "Example Company",
-        "job_title": "Junior Python Developer",
-        "url": "https://example.com/jobs/123456",
-        "location": "Houston, Texas",
-    }
-
-    assert normalize_adzuna_job(raw_job) == expected_job
-
-
 def test_fetch_adzuna_jobs_returns_results(monkeypatch):
     raw_jobs = [
         {
@@ -71,3 +43,54 @@ def test_fetch_adzuna_jobs_returns_results(monkeypatch):
         },
         timeout=10.0,
     )
+
+
+def test_normalize_adzuna_job_maps_required_and_optional_fields():
+    raw_job = {
+        "id": "123456",
+        "title": "Junior Python Developer",
+        "redirect_url": "https://example.com/jobs/123456",
+        "company": {
+            "display_name": "Example Company",
+        },
+        "location": {
+            "display_name": "Houston, Texas",
+        },
+        "salary_min": 60000,
+        "salary_max": 75000,
+        "description": "An entry-level Python development position.",
+    }
+
+    expected_job = {
+        "source_job_id": "123456",
+        "job_source": "Adzuna",
+        "company_name": "Example Company",
+        "job_title": "Junior Python Developer",
+        "url": "https://example.com/jobs/123456",
+        "location": "Houston, Texas",
+        "salary_min": 60000,
+        "salary_max": 75000,
+        "job_description": "An entry-level Python development position.",
+    }
+
+    assert normalize_adzuna_job(raw_job) == expected_job
+
+
+def test_normalize_adzuna_job_allows_missing_optional_fields():
+    raw_job = {
+        "id": "123456",
+        "title": "Junior Python Developer",
+        "redirect_url": "https://example.com/jobs/123456",
+        "company": {
+            "display_name": "Example Company",
+        },
+        "location": {
+            "display_name": "Houston, Texas",
+        },
+    }
+
+    normalized_job = normalize_adzuna_job(raw_job)
+
+    assert normalized_job["salary_min"] is None
+    assert normalized_job["salary_max"] is None
+    assert normalized_job["job_description"] is None

@@ -20,6 +20,9 @@ def test_import_adzuna_jobs_saves_each_job(tmp_path):
             "location": {
                 "display_name": "Houston, Texas",
             },
+            "salary_min": 60000,
+            "salary_max": 75000,
+            "description": "An entry-level Python development position.",
         },
         {
             "id": "adzuna-102",
@@ -43,6 +46,14 @@ def test_import_adzuna_jobs_saves_each_job(tmp_path):
         "adzuna-101",
         "adzuna-102",
     }
+    stored_job = next(
+        job for job in stored_jobs if job["source_job_id"] == "adzuna-101"
+    )
+    assert stored_job["salary_min"] == 60000
+    assert stored_job["salary_max"] == 75000
+    assert (
+        stored_job["job_description"] == "An entry-level Python development position."
+    )
 
 
 def test_import_adzuna_jobs_counts_only_new_jobs(tmp_path):

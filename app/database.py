@@ -58,6 +58,9 @@ def add_job_lead(
     job_title,
     url,
     location,
+    salary_min=None,
+    salary_max=None,
+    job_description=None,
     db_path="job_leads.db",
 ):
     conn = None
@@ -68,8 +71,16 @@ def add_job_lead(
 
         cur.execute(
             """INSERT INTO job_leads
-            (source_job_id, job_source, company_name, job_title, url, location)
-            VALUES (?, ?, ?, ?, ?, ?)""",
+            (source_job_id,
+            job_source,
+            company_name,
+            job_title,
+            url,
+            location,
+            salary_min,
+            salary_max,
+            job_description)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 source_job_id,
                 job_source,
@@ -77,6 +88,9 @@ def add_job_lead(
                 job_title,
                 url,
                 location,
+                salary_min,
+                salary_max,
+                job_description,
             ),
         )
         conn.commit()

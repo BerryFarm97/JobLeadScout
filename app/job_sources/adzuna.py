@@ -9,6 +9,9 @@ def normalize_adzuna_job(job_data):
         "job_title": job_data["title"],
         "url": job_data["redirect_url"],
         "location": job_data["location"]["display_name"],
+        "salary_min": job_data.get("salary_min"),
+        "salary_max": job_data.get("salary_max"),
+        "job_description": job_data.get("description"),
     }
     return normalized_job_lead
 
