@@ -13,6 +13,7 @@ from app.database import (
     get_job_leads_page,
     get_job_leads_count,
 )
+from app.formatters import format_salary_range
 from app.services.job_importer import refresh_adzuna_jobs
 
 load_dotenv()
@@ -80,6 +81,12 @@ def dashboard(request: Request, page: int = 1, status: str | None = None):
     all_job_leads = get_job_leads_page(
         limit=limit, offset=page_offset, status_filter=status
     )
+
+    for lead in all_job_leads:
+        lead["salary_display"] = format_salary_range(
+            salary_min=lead["salary_min"], salary_max=lead["salary_max"]
+        )
+
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
