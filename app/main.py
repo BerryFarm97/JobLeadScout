@@ -6,10 +6,12 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app.database import get_all_job_leads, init_db
+from app.database import get_all_job_leads, init_db, update_job_lead_status
 from app.services.job_importer import refresh_adzuna_jobs
 
 load_dotenv()
+
+STATUS_OPTIONS = ["new", "saved", "applied", "archived"]
 
 
 @asynccontextmanager
@@ -69,3 +71,20 @@ def dashboard(request: Request):
         name="dashboard.html",
         context={"job_leads": all_job_leads},
     )
+
+
+@app.patch("/job-leads/{job_lead_id}/status")
+def change_job_lead_status(job_lead_id: int, new_status: str):
+    if new_status not in STATUS_OPTIONS:
+        raise HTTPException(
+            status_code=400, detail=f"{new_status} is not a valid status"
+        )
+    status_updated = update_job_lead_status(new_status, job_lead_id)
+
+    if not status_updated:
+        raise HTTPException(status_code=404, detail="Job id cannot be found")
+
+    return {
+        "job_lead_id": job_lead_id,
+        "status": new_status,
+    }

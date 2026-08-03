@@ -1,5 +1,7 @@
 import sqlite3
 
+STATUS_OPTIONS = ["new", "saved", "applied", "archived"]
+
 
 def get_db_connection(db_path="job_leads.db"):
     return sqlite3.connect(db_path)
@@ -137,9 +139,8 @@ def get_all_job_leads(db_path="job_leads.db"):
 
 def update_job_lead_status(new_status, job_lead_id, db_path="job_leads.db"):
     conn = None
-    status_options = ["new", "saved", "applied", "archived"]
 
-    if new_status not in status_options:
+    if new_status not in STATUS_OPTIONS:
         return False
 
     try:
