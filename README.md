@@ -123,3 +123,7 @@ The current suite contains 40 tests covering database operations, Adzuna normali
 - ☐ Add explainable match estimates using a user-defined skills profile
 - ☐ Add configurable search preferences
 - ☐ Deploy the application with persistent database storage
+
+## Dashboard
+
+![Job Lead Scout dashboard](docs/images/dashboard.png)
