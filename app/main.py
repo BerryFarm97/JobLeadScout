@@ -91,6 +91,9 @@ def dashboard(request: Request, page: int = 1, status: str | None = None):
 
     return templates.TemplateResponse(
         request=request,
+        headers={
+            "Cache-Control": "no-store",
+        },
         name="dashboard.html",
         context={
             "job_leads": all_job_leads,

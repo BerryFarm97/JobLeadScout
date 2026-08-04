@@ -34,3 +34,22 @@ def test_dashboard_displays_total_matching_job_count(monkeypatch):
 
     assert response.status_code == 200
     assert "Total Jobs: 37" in response.text
+
+
+def test_dashboard_disables_browser_caching(monkeypatch):
+    monkeypatch.setattr(
+        main_module,
+        "get_job_leads_count",
+        lambda status_filter=None: 0,
+    )
+    monkeypatch.setattr(
+        main_module,
+        "get_job_leads_page",
+        lambda limit, offset, status_filter=None: [],
+    )
+
+    client = TestClient(main_module.app)
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
