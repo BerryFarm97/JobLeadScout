@@ -33,7 +33,6 @@ def init_db(db_path="job_leads.db"):
                 salary_interval TEXT,
                 job_description TEXT,
                 job_location_type TEXT NOT NULL DEFAULT 'unknown',
-                match_rating TEXT,
                 status TEXT NOT NULL DEFAULT 'new',
                 date_found TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(job_source, source_job_id)
@@ -239,6 +238,36 @@ def get_job_leads_count(status_filter=None, db_path="job_leads.db"):
     except sqlite3.Error as error:
         print(error)
         return None
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+def delete_job_lead(job_lead_id, db_path="job_leads.db"):
+    conn = None
+    try:
+        conn = get_db_connection(db_path=db_path)
+        cur = get_db_cursor(conn=conn)
+
+        cur.execute(
+            """DELETE FROM job_leads
+            WHERE id = ?
+            AND status = ?""",
+            (
+                job_lead_id,
+                "archived",
+            ),
+        )
+        if cur.rowcount == 1:
+            conn.commit()
+            return True
+        else:
+            return False
+    except sqlite3.Error as error:
+        if conn is not None:
+            conn.rollback()
+        print(error)
+        return False
     finally:
         if conn is not None:
             conn.close()

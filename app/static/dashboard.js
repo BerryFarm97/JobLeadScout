@@ -1,6 +1,7 @@
 const jobForm = document.getElementById("job-search-form");
 const refreshButton = document.getElementById("refresh-button");
 const statusDropdowns = document.querySelectorAll(".status-select");
+const deleteButtons = document.querySelectorAll(".delete-lead-button");
 
 async function refreshJobLeads(event) {
     event.preventDefault();
@@ -67,6 +68,37 @@ statusDropdowns.forEach(function (statusDropdown) {
         } catch (error) {
             console.error(error);
             window.alert("Unable to complete request. Please try again later.");
+        }
+    });
+});
+
+deleteButtons.forEach(function (deleteButton) {
+    deleteButton.addEventListener("click", async function (event) {
+        const jobId = event.currentTarget.dataset.jobLeadId;
+        const deleteUrl = `/job-leads/${jobId}`;
+
+        const userChoice = window.confirm("Are you sure you want to permanently delete? This cannot be undone.");
+        if (!userChoice) {
+            return;
+        }
+        deleteButton.disabled = true;
+        try {
+            const deleteResponse = await fetch(deleteUrl, {
+                method: "DELETE",
+            });
+
+            const apiDeleteResponse = await deleteResponse.json();
+
+            if (deleteResponse.ok) {
+                window.location.reload();
+            } else {
+                window.alert(apiDeleteResponse.detail);
+            }
+        } catch (error) {
+            console.error(error);
+            window.alert("Unable to delete job lead. Please try again later");
+        } finally {
+            deleteButton.disabled = false;
         }
     });
 });

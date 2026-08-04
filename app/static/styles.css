@@ -156,6 +156,30 @@ tbody tr:hover{
     border-radius: 3px;
 }
 
+.status-actions{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.delete-lead-button{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 4px;
+    transition: var(--surface-background) 0.2s ease, var(--border-color) 0.2s ease;
+    background-color: var(--surface-raised);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.delete-lead-button:hover{
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: #f87171;
+}
+
 .footer-wrapper{
     display: flex;
     flex-wrap: wrap;

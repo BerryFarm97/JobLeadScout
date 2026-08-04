@@ -4,6 +4,7 @@ from app.database import (
     add_job_lead,
     get_all_job_leads,
     update_job_lead_status,
+    delete_job_lead,
 )
 
 
@@ -242,7 +243,7 @@ def test_get_all_job_leads_filters_by_status(tmp_path):
                     "Junior Developer",
                     "https://example.com/new",
                     "Houston, Texas",
-                    "New",
+                    "new",
                 ),
                 (
                     "archived-job-1",
@@ -251,17 +252,87 @@ def test_get_all_job_leads_filters_by_status(tmp_path):
                     "Python Developer",
                     "https://example.com/archived",
                     "Remote",
-                    "Archived",
+                    "archived",
                 ),
             ],
         )
 
     archived_leads = get_all_job_leads(
         db_path=str(db_path),
-        status_filter="Archived",
+        status_filter="archived",
     )
 
     assert archived_leads is not None
     assert len(archived_leads) == 1
     assert archived_leads[0]["company_name"] == "Archived Company"
-    assert archived_leads[0]["status"] == "Archived"
+    assert archived_leads[0]["status"] == "archived"
+
+
+def test_delete_job_lead_deletes_archived_job(tmp_path):
+    db_path = tmp_path / "job_leads.db"
+    assert init_db(db_path) is True
+
+    assert (
+        add_job_lead(
+            source_job_id="delete-101",
+            job_source="Adzuna",
+            company_name="Archived Company",
+            job_title="Junior Developer",
+            url="https://example.com/delete-101",
+            location="Remote",
+            db_path=db_path,
+        )
+        is True
+    )
+
+    stored_job = get_all_job_leads(db_path=db_path)[0]
+
+    assert (
+        update_job_lead_status(
+            new_status="archived",
+            job_lead_id=stored_job["id"],
+            db_path=db_path,
+        )
+        is True
+    )
+
+    result = delete_job_lead(
+        job_lead_id=stored_job["id"],
+        db_path=db_path,
+    )
+
+    remaining_jobs = get_all_job_leads(db_path=db_path)
+
+    assert result is True
+    assert remaining_jobs == []
+
+
+def test_delete_job_lead_rejects_non_archived_job(tmp_path):
+    db_path = tmp_path / "job_leads.db"
+    assert init_db(db_path) is True
+
+    assert (
+        add_job_lead(
+            source_job_id="delete-102",
+            job_source="Adzuna",
+            company_name="Active Company",
+            job_title="Python Developer",
+            url="https://example.com/delete-102",
+            location="Houston, Texas",
+            db_path=db_path,
+        )
+        is True
+    )
+
+    stored_job = get_all_job_leads(db_path=db_path)[0]
+
+    result = delete_job_lead(
+        job_lead_id=stored_job["id"],
+        db_path=db_path,
+    )
+
+    remaining_jobs = get_all_job_leads(db_path=db_path)
+
+    assert result is False
+    assert len(remaining_jobs) == 1
+    assert remaining_jobs[0]["status"] == "new"

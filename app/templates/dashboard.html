@@ -30,7 +30,7 @@
             </section>
             <section>
                 <h2>Summary</h2>
-                <p>Total Jobs: {{ job_leads | length }}</p>
+                <p>Total Jobs: {{ lead_count }}</p>
             </section>
         </div>
         <section>
@@ -46,7 +46,6 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Match</th>
                         <th>Job Title</th>
                         <th>Company</th>
                         <th>Location</th>
@@ -59,7 +58,6 @@
                 <tbody>
                     {% for lead in job_leads %}
                         <tr>
-                            <td>{{ lead["match_rating"] or "Unrated" }}</td>
                             <td>{{ lead["job_title"] }}</td>
                             <td>{{ lead["company_name"] }}</td>
                             <td>{{ lead["location"] }}</td>
@@ -69,11 +67,24 @@
                                 <a href="{{ lead['url'] }}" target="_blank" rel="noopener noreferrer">View Job</a>
                             </td>
                             <td>
-                                <select class="status-select" data-job-lead-id="{{ lead['id'] }}">
-                                    {% for status_option in status_options %}
-                                        <option value="{{ status_option }}" {% if status_option == lead['status'] %}selected{% endif %}>{{ status_option | title }}</option>
-                                    {% endfor %}
-                                </select>
+                                <div class="status-actions">
+                                    <select class="status-select" data-job-lead-id="{{ lead['id'] }}">
+                                        {% for status_option in status_options %}
+                                            <option value="{{ status_option }}" {% if status_option == lead['status'] %}selected{% endif %}>{{ status_option | title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if lead["status"] == "archived" %}
+                                        <button
+                                            type="button"
+                                            class="delete-lead-button"
+                                            data-job-lead-id="{{ lead['id'] }}"
+                                            aria-label="Permanently delete job lead"
+                                            title="Permanently delete job lead"
+                                        >
+                                            🗑️
+                                        </button>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

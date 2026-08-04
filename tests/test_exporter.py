@@ -30,7 +30,7 @@ def test_db_to_csv_exports_selected_job_lead_fields():
             "salary_min": 60000,
             "salary_max": None,
             "salary_interval": "year",
-            "status": "New",
+            "status": "new",
             "date_found": "2026-08-04 10:00:00",
             "url": "https://example.com/job/123",
             "job_description": "An intentionally excluded field.",
@@ -49,7 +49,7 @@ def test_db_to_csv_exports_selected_job_lead_fields():
             "Location": "Houston, Texas",
             "Salary Minimum": "60000",
             "Salary Maximum": "",
-            "Status": "New",
+            "Status": "new",
             "Date Found": "2026-08-04 10:00:00",
             "Listing URL": "https://example.com/job/123",
         }

@@ -11,8 +11,13 @@ The following features are planned for the MVP and will be updated as they are c
 - [ x] Collect job leads from legitimate job-search APIs
 - [ x] Store essential information about each lead
 - [ x] Prevent duplicate listings from being saved
-- [ ] Classify listings as remote, local, hybrid, outside the preferred area, or unknown (Not possible with current API limitations)
-- [ ] Estimate whether each listing is a likely match, possible stretch, or unlikely match
 - [ x] Allow leads to be saved, dismissed, applied to, or archived
 - [ x] Display collected leads through a web dashboard
 - [ x] Export selected leads to a CSV file
+
+## Possible Future Enhancements
+
+The following features are possible future enhancements I would like to implement.
+
+- [ ] Classify listings as remote, local, hybrid, outside the preferred area, or unknown
+- [ ] Estimate whether each listing is a likely match, possible stretch, or unlikely match

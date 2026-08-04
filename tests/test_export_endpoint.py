@@ -29,7 +29,7 @@ def test_export_job_leads_returns_downloadable_csv(monkeypatch):
 
     def fake_get_all_job_leads(status_filter=None):
         received_filter["status"] = status_filter
-        return [make_job_lead("New")]
+        return [make_job_lead("new")]
 
     monkeypatch.setattr(
         main_module,
@@ -51,7 +51,7 @@ def test_export_job_leads_returns_downloadable_csv(monkeypatch):
 
     assert len(rows) == 1
     assert rows[0]["Company Name"] == "Example Company"
-    assert rows[0]["Status"] == "New"
+    assert rows[0]["Status"] == "new"
 
 
 def test_export_job_leads_forwards_status_filter(monkeypatch):
@@ -59,7 +59,7 @@ def test_export_job_leads_forwards_status_filter(monkeypatch):
 
     def fake_get_all_job_leads(status_filter=None):
         received_filter["status"] = status_filter
-        return [make_job_lead("Archived")]
+        return [make_job_lead("archived")]
 
     monkeypatch.setattr(
         main_module,
@@ -70,13 +70,13 @@ def test_export_job_leads_forwards_status_filter(monkeypatch):
     client = TestClient(main_module.app)
     response = client.get(
         "/job-leads/export",
-        params={"status": "Archived"},
+        params={"status": "archived"},
     )
 
     assert response.status_code == 200
-    assert received_filter["status"] == "Archived"
+    assert received_filter["status"] == "archived"
 
     rows = read_response_rows(response)
 
     assert len(rows) == 1
-    assert rows[0]["Status"] == "Archived"
+    assert rows[0]["Status"] == "archived"

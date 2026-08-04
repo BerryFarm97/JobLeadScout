@@ -12,6 +12,7 @@ from app.database import (
     update_job_lead_status,
     get_job_leads_page,
     get_job_leads_count,
+    delete_job_lead,
 )
 from app.exporter import db_to_csv
 from app.formatters import format_salary_range
@@ -97,6 +98,7 @@ def dashboard(request: Request, page: int = 1, status: str | None = None):
             "current_page": page,
             "total_page_count": page_count,
             "filtered_status": status,
+            "lead_count": lead_count,
         },
     )
 
@@ -128,3 +130,16 @@ def call_job_leads_export(status: str | None = None):
         media_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="job_leads.csv"'},
     )
+
+
+@app.delete("/job-leads/{job_lead_id}")
+def delete_archived_job_lead(job_lead_id: int):
+    job_deleted = delete_job_lead(job_lead_id)
+
+    if not job_deleted:
+        raise HTTPException(status_code=404, detail="Archived job lead not found")
+
+    return {
+        "job_lead_id": job_lead_id,
+        "deleted": True,
+    }
