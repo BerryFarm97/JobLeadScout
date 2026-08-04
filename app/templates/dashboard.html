@@ -79,12 +79,15 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <nav class="pagination">
-                <span class="pagination-label">Page:</span>
+            <div class="footer-wrapper">
+                <nav class="pagination">
+                    <span class="pagination-label">Page:</span>
                 {% for page_number in range(1, total_page_count + 1) %}
                     <a class="page-link{% if page_number == current_page %} active{% endif %}" href="/?page={{ page_number }}{% if filtered_status %}&status={{ filtered_status }}{% endif %}">{{ page_number }}</a>
                 {% endfor %}
-            </nav>
+                </nav>
+                <a class="csv-export-button" href="/job-leads/export{% if filtered_status %}?status={{ filtered_status }}{% endif %}">Export CSV</a>
+            </div>
             {% else %}
                 <div class="empty-state">
                     <p class="empty-state-message">Nothing to see</p>

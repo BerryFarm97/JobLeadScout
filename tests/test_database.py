@@ -214,3 +214,54 @@ def test_update_job_lead_status_rejects_invalid_status(tmp_path):
 
     assert result is False
     assert unchanged_job["status"] == "new"
+
+
+def test_get_all_job_leads_filters_by_status(tmp_path):
+    db_path = tmp_path / "job_leads.db"
+    init_db(db_path=str(db_path))
+
+    with sqlite3.connect(db_path) as conn:
+        conn.executemany(
+            """
+            INSERT INTO job_leads (
+                source_job_id,
+                job_source,
+                company_name,
+                job_title,
+                url,
+                location,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    "new-job-1",
+                    "Adzuna",
+                    "New Company",
+                    "Junior Developer",
+                    "https://example.com/new",
+                    "Houston, Texas",
+                    "New",
+                ),
+                (
+                    "archived-job-1",
+                    "Adzuna",
+                    "Archived Company",
+                    "Python Developer",
+                    "https://example.com/archived",
+                    "Remote",
+                    "Archived",
+                ),
+            ],
+        )
+
+    archived_leads = get_all_job_leads(
+        db_path=str(db_path),
+        status_filter="Archived",
+    )
+
+    assert archived_leads is not None
+    assert len(archived_leads) == 1
+    assert archived_leads[0]["company_name"] == "Archived Company"
+    assert archived_leads[0]["status"] == "Archived"

@@ -2,7 +2,7 @@ import math, os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -13,6 +13,7 @@ from app.database import (
     get_job_leads_page,
     get_job_leads_count,
 )
+from app.exporter import db_to_csv
 from app.formatters import format_salary_range
 from app.services.job_importer import refresh_adzuna_jobs
 
@@ -115,3 +116,15 @@ def change_job_lead_status(job_lead_id: int, new_status: str):
         "job_lead_id": job_lead_id,
         "status": new_status,
     }
+
+
+@app.get("/job-leads/export")
+def call_job_leads_export(status: str | None = None):
+    job_leads = get_all_job_leads(status_filter=status)
+    db_csv_file = db_to_csv(job_leads)
+
+    return Response(
+        content=db_csv_file,
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="job_leads.csv"'},
+    )

@@ -156,6 +156,17 @@ tbody tr:hover{
     border-radius: 3px;
 }
 
+.footer-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .pagination{
     display: flex;
     align-items: center;
@@ -182,6 +193,20 @@ tbody tr:hover{
     color: var(--text-color);
     font-weight: 700;
     border-radius: 3px;
+}
+
+.csv-export-button{
+    display: inline-block;
+    padding: 0.65rem 1.25rem;
+    background-color: var(--surface-raised);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
 }
 
 .empty-state{

@@ -114,16 +114,23 @@ def add_job_lead(
             conn.close()
 
 
-def get_all_job_leads(db_path="job_leads.db"):
+def get_all_job_leads(db_path="job_leads.db", status_filter=None):
     conn = None
     try:
         conn = get_db_connection(db_path)
         conn.row_factory = sqlite3.Row
 
         cur = get_db_cursor(conn)
-
-        cur.execute("""SELECT * FROM job_leads
-            ORDER BY date_found DESC, id DESC""")
+        if status_filter is None:
+            cur.execute("""SELECT * FROM job_leads
+                ORDER BY date_found DESC, id DESC""")
+        else:
+            cur.execute(
+                """SELECT * FROM job_leads
+                WHERE status = ?
+                ORDER BY date_found DESC, id DESC""",
+                (status_filter,),
+            )
 
         rows = cur.fetchall()
         return [dict(row) for row in rows]
